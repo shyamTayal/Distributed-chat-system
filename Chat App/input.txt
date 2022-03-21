@@ -1,0 +1,13 @@
+2
+1 192.168.29.223
+2 192.168.29.201
+1|2|Hi Machine 2
+1|2|How are u machine 2
+2|1|Hi machine 1.
+1|2|Yes I listen to you
+1|2|You are clearly audible
+1|2|Keep this connection up and live
+2|1|Sure 
+2|1|Will try to keep it up
+1|2|Bye bye
+2|1|Bye, C u soon
