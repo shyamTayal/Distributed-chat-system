@@ -23,9 +23,10 @@ How to run chat app:
 ```
 ./app.py 
 ```
- - Program will automatically figure out you IP and assign a UserID.
+ - Program will automatically figure out your IP and assign a corresponding UserID.
  - Keep `input.txt` in same directory as `app.py`.
- - Make sure to connect devices to same network/Wi-Fi. (Hack: turn hotspot in one of the phone and connect all devices to it. This probably won't have any issues due to different proxies on same network.)
+ - `input.txt` must be exactly same for each node.
+ - Make sure to connect devices to same network/Wi-Fi. (Hack: turn on hotspot in one of the phone and connect all devices to it. This probably won't have any issues due to different proxies on same network.)
 
 ToDo:
 
