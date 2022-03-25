@@ -33,4 +33,5 @@ ToDo:
  - [X] Improve terminal output using [Py-console library](https://towardsdatascience.com/python-printing-colorful-outputs-with-ease-b4e2a183db7c).
 
 Output:
+
 <img src="Output.png">
