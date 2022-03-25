@@ -1,5 +1,8 @@
+from attr import attr
+import pyfiglet
 import socket
 import time
+from termcolor import colored
 class User:
     HOST = ''
     PORT = 8000
@@ -9,17 +12,17 @@ class User:
         self.IP_2_USERID={}
         self.MSG_QUEUE=[]
         self.parse(file_name)
-        self.MY_IP=socket.gethostbyname(socket.gethostname())
-        # self.MY_PORT=8000
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('8.8.8.8', 1))  # connect() for UDP doesn't send packets
+        local_ip_address = s.getsockname()[0]
+        self.MY_IP = local_ip_address
         self.MY_USER_ID=self.IP_2_USERID[self.MY_IP]
     def filter(self):
         self.MSG_QUEUE = [msg for msg in self.MSG_QUEUE if msg["sender"] == self.MY_USER_ID or msg["recv"] == self.MY_USER_ID]
     def parse(self, file):
         with open(file, "r") as f:
             data = f.read().splitlines()
-
             self.NUM_USERS = int(data[0])
-
             for i in range(1, self.NUM_USERS+1):
                 id, ip = data[i].split(' ')
                 self.USERID_2_IP[int(id)] = str(ip)
@@ -44,13 +47,14 @@ class User:
         listener_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         listener_socket.bind((self.HOST, self.PORT))
         listener_socket.listen(999)
-        print(f"Listening started... on port {self.PORT}")
+        print(f"📞| Listening started... on port {self.PORT}")
+        print("")
         temp_queue=[]
         msg_idx=0
         while True and msg_idx < len(self.MSG_QUEUE):
             if(self.MSG_QUEUE[msg_idx]["sender"] == self.MY_USER_ID):
                 # send msg
-                print(f"Sending msg to {self.MSG_QUEUE[msg_idx]['recv']} : {self.MSG_QUEUE[msg_idx]['msg']}")
+                print(f"➡️ | {colored('To', 'green', attrs=['bold'])} {self.MSG_QUEUE[msg_idx]['recv']} \t: {self.MSG_QUEUE[msg_idx]['msg']}")
                 while not self.send_msg(self.MSG_QUEUE[msg_idx]["msg"], self.MSG_QUEUE[msg_idx]["recv"]):
                     print("Error sending msg, retrying...")
                 msg_idx+=1
@@ -60,9 +64,10 @@ class User:
                 found_in_queue = False
                 for idx, old_msg in enumerate(temp_queue):
                     if(old_msg["from"] == self.MSG_QUEUE[msg_idx]["sender"]):
-                        print(f"Received msg from {old_msg['from']} : {old_msg['msg']}")
+                        print(f"⬅️ | {colored('From', 'blue', attrs=['bold'])} {old_msg['from']} \t: {old_msg['msg']}")
                         del temp_queue[idx]
                         found_in_queue = True
+                        msg_idx+=1
                         break
                 if(not found_in_queue):
                     while True:
@@ -75,23 +80,26 @@ class User:
                             full_msg += chunk
                         ip, port = addr
                         if self.get_user_id(ip) == self.MSG_QUEUE[msg_idx]["sender"]:
-                            print(f"Received msg from {self.MSG_QUEUE[msg_idx]['sender']} : {full_msg}")
+                            print(f"⬅️ | {colored('From', 'blue', attrs=['bold'])} {self.MSG_QUEUE[msg_idx]['sender']} \t: {full_msg}")
                             msg_idx+=1
                             break
                         elif self.get_user_id(ip) != self.MSG_QUEUE[msg_idx]["sender"]:
                             temp_queue.append({"from":self.get_user_id(ip), "msg":full_msg})
                 time.sleep(1)
     def to_string(self):
-        print(f"My User ID: {self.MY_USER_ID}")
-        print(f"My IP: {self.MY_IP}")
-        # print("My Port:", self.MY_PORT)
-        print(f"Number of users: {self.NUM_USERS}")
-        print(f"UserID to IP:\n {self.USERID_2_IP}")
-        print(f"IP to UserID:\n {self.IP_2_USERID}")
-        print(f"Message queue:\n {self.MSG_QUEUE}")
-        print("="*80)
+        print("="*43)
+        print(f"👤 | User ID: {self.MY_USER_ID}")
+        print(f"📍 | User IP: {self.MY_IP}")
+        print(f"👥 | # of users: {self.NUM_USERS}")
+        # print(f"UserID to IP:\n {self.USERID_2_IP}")
+        # print(f"IP to UserID:\n {self.IP_2_USERID}")
+        # print(f"Message queue:\n {self.MSG_QUEUE}")
+        print("="*43)
+        print("")
 
 if __name__ == "__main__":
+    header_art = pyfiglet.figlet_format("Distributed Chat App", font = "digital")
+    print(header_art)
     user = User("input.txt")
     user.filter()
     user.to_string()
