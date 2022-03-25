@@ -36,7 +36,6 @@ class User:
         try:
             client_socket.connect((self.get_ip(receiver), self.PORT))
             client_socket.sendall(msg.encode('utf-8'))
-            client_socket.close()
             return True
         except socket.error as e:
             print(f"Error sending msg: {e}")
@@ -49,31 +48,29 @@ class User:
         temp_queue=[]
         msg_idx=0
         while True and msg_idx < len(self.MSG_QUEUE):
-            print(msg_idx)
             if(self.MSG_QUEUE[msg_idx]["sender"] == self.MY_USER_ID):
                 # send msg
                 print(f"Sending msg to {self.MSG_QUEUE[msg_idx]['recv']} : {self.MSG_QUEUE[msg_idx]['msg']}")
                 while not self.send_msg(self.MSG_QUEUE[msg_idx]["msg"], self.MSG_QUEUE[msg_idx]["recv"]):
                     print("Error sending msg, retrying...")
+                print(f"Sent successfully")
                 msg_idx+=1
                 # time.sleep(1)
             elif(self.MSG_QUEUE[msg_idx]["recv"] == self.MY_USER_ID):
                 # receive msg
                 found_in_queue = False
                 for idx, old_msg in enumerate(temp_queue):
-                    print("Danda nahi fasa")
                     if(old_msg["from"] == self.MSG_QUEUE[msg_idx]["sender"]):
                         print(f"Received msg from {old_msg['from']} : {old_msg['msg']}")
+                        msg_idx+=1
                         del temp_queue[idx]
                         found_in_queue = True
                         break
                 if(not found_in_queue):
                     while True:
-                        print(msg_idx)
                         client_socket, addr = listener_socket.accept()
                         full_msg = ""
                         while True:
-                            print("2 Danda fass gaya")
                             chunk = client_socket.recv(1024).decode('utf-8')
                             if not chunk:
                                 break
@@ -84,8 +81,9 @@ class User:
                             msg_idx+=1
                             break
                         elif self.get_user_id(ip) != self.MSG_QUEUE[msg_idx]["sender"]:
+                            print(f"(Waiting in queue) Received msg from {self.get_user_id(ip)} : {full_msg}")
                             temp_queue.append({"from":self.get_user_id(ip), "msg":full_msg})
-                        client_socket.close()
+                            break
                 # time.sleep(1)
     def to_string(self):
         print(f"My User ID: {self.MY_USER_ID}")
