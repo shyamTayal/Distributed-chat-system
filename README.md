@@ -2,18 +2,29 @@
 
 ## Input file generator
 
-How to generate inputfile
+How to generate inputfile for Chat app
 
 ```
 python.exe gen.py <n> <m> <ips>
 ```
+
  - `n`: number of users in chat system
  - `m`: number of messages to be sent
  - `ips`: space separated list of n IP addresses [only IP, please do not pass Port number]
- - `Input.txt` file is created after running `gen.py`
+ - `input.txt` file is created after running `gen.py`
 
  Example:
  `./gen.py 5 10 192.168.29.1 192.168.29.2 192.168.29.3 192.168.29.4 192.168.29.5`
+
+How to generate inputfile for Leader election
+
+```
+python gen_leader.py <n> <ips>
+```
+
+ - `n`: number of users in unidirectional ring
+ - `ips`: space separated list of n IP address.
+ - `leader_input.txt` file is created after running `gen_leader.py`
 
 ---
 
@@ -34,4 +45,19 @@ ToDo:
 
 Output:
 
-<img src="Output.png">
+<img src="Chat App/Output.png">
+
+## Part 2: Leader election Simulation
+
+We implemented **Chang-Roberts Algorithm** on unidirectional ring.
+
+How to run leader election:
+```
+./leader.py
+```
+ - All instructions remain same as chat app.
+ - Same network.
+ - Keep `leader_input.txt` and `leader.py` in same folder
+
+Output:
+<img src="Leader Election/leader output.png">
