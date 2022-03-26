@@ -58,3 +58,6 @@ How to run leader election:
  - All instructions remain same as chat app.
  - Same network.
  - Keep `leader_input.txt` and `leader.py` in same folder
+
+Output:
+<img src="Leader Election/leader output.png">
