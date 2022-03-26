@@ -45,7 +45,7 @@ ToDo:
 
 Output:
 
-<img src="Output.png">
+<img src="Chat App/Output.png">
 
 ## Part 2: Leader election Simulation
 
