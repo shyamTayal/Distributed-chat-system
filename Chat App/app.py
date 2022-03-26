@@ -1,4 +1,3 @@
-from attr import attr
 import pyfiglet
 import socket
 import time
